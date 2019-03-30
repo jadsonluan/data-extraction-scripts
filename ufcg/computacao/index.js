@@ -1,6 +1,6 @@
 var data;
 
-Papa.parse('resources/horario20191.csv', {
+Papa.parse('/ufcg/computacao/csv/horario20191.csv', {
 	header: true,
 	download: true,
 	dynamicTyping: true,
@@ -8,7 +8,8 @@ Papa.parse('resources/horario20191.csv', {
 		data = results.data;
 		data.sort((a, b) => (a.disciplina > b.disciplina) - (b.disciplina > a.disciplina));
 		data = normalize(data);
-		console.log(JSON.stringify(data[0]));
+		data = separateSubjectClass(data);
+		console.log(data);
 	}
 });
 
@@ -30,4 +31,17 @@ function merge(objA, objB) {
 		}
 	}
 	return objA;
+}
+
+function separateSubjectClass(data) {
+	var subject, classNum;
+	var temp;
+	for (var i = 0; i < data.length; i++) {
+		temp = data[i].disciplina;
+		subject = temp.slice(0, -3);
+		classNum = temp.slice(-2);
+		data[i].disciplina = subject;
+		data[i].turma = classNum;
+	}
+	return data;
 }
